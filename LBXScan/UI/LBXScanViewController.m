@@ -180,6 +180,8 @@
                     
                     [weakSelf scanResultWithArray:@[result]];
                     
+                } brightNessBlock:^(CGFloat value) {
+                    //
                 }];
                 
                 if (_isOpenInterestRect) {

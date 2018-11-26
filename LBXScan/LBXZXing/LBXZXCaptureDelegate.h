@@ -20,6 +20,7 @@
 @protocol LBXZXCaptureDelegate <NSObject>
 
 - (void)captureResult:(LBXZXCapture *)capture result:(ZXResult *)result scanImage:(UIImage*)img;
+- (void)captureResult:(LBXZXCapture *)capture captureBrightnessValue:(CGFloat)brightNessValue;
 
 @optional
 - (void)LBXCaptureSize:(LBXZXCapture *)capture

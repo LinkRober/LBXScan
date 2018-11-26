@@ -13,11 +13,13 @@
 
 
 typedef void(^blockScan)(ZXBarcodeFormat barcodeFormat,NSString *str,UIImage *scanImg);
+typedef void(^BrightNessBlock)(CGFloat value);
 
 @interface ZXingWrapper() <LBXZXCaptureDelegate>
 @property (nonatomic, strong) LBXZXCapture *capture;
 
-@property (nonatomic,copy)blockScan block;
+@property (nonatomic,copy) blockScan block;
+@property (nonatomic, copy) BrightNessBlock brightNessBlock;
 
 @property (nonatomic, assign) BOOL bNeedScanResult;
 
@@ -40,7 +42,7 @@ typedef void(^blockScan)(ZXBarcodeFormat barcodeFormat,NSString *str,UIImage *sc
     return self;
 }
 
-- (id)initWithPreView:(UIView*)preView block:(void(^)(ZXBarcodeFormat barcodeFormat,NSString *str,UIImage *scanImg))block
+- (id)initWithPreView:(UIView*)preView block:(void(^)(ZXBarcodeFormat barcodeFormat,NSString *str,UIImage *scanImg))block brightNessBlock:(void (^)(CGFloat))brightNessBlock
 {
     if (self = [super init]) {
         
@@ -52,6 +54,7 @@ typedef void(^blockScan)(ZXBarcodeFormat barcodeFormat,NSString *str,UIImage *sc
         self.capture.delegate = self;
         
         self.block = block;
+        self.brightNessBlock = brightNessBlock;
         
         CGRect rect = preView.frame;
         rect.origin = CGPointZero;
@@ -110,6 +113,12 @@ typedef void(^blockScan)(ZXBarcodeFormat barcodeFormat,NSString *str,UIImage *sc
         
         _block(result.barcodeFormat,result.text,img);
     }    
+}
+
+- (void)captureResult:(LBXZXCapture *)capture captureBrightnessValue:(CGFloat)brightNessValue {
+    if(_brightNessBlock){
+        self.brightNessBlock(brightNessValue);
+    }
 }
 
 

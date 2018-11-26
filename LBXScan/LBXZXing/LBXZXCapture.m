@@ -362,6 +362,15 @@
 didOutputSampleBuffer:(CMSampleBufferRef)sampleBuffer
        fromConnection:(AVCaptureConnection *)connection {
     
+    CFDictionaryRef metadataDict = CMCopyDictionaryOfAttachments(NULL,sampleBuffer, kCMAttachmentMode_ShouldPropagate);
+    NSDictionary *metadata = [[NSMutableDictionary alloc] initWithDictionary:(__bridge NSDictionary*)metadataDict];
+    CFRelease(metadataDict);
+    NSDictionary *exifMetadata = [[metadata objectForKey:(NSString *)kCGImagePropertyExifDictionary] mutableCopy];
+    CGFloat brightnessValue = [[exifMetadata objectForKey:(NSString *)kCGImagePropertyExifBrightnessValue] floatValue];
+    if([self.delegate respondsToSelector:@selector(captureResult:captureBrightnessValue:)]){
+        [self.delegate captureResult:self captureBrightnessValue:brightnessValue];
+    }
+    
     
   @autoreleasepool {
     if (!self.cameraIsReady) {

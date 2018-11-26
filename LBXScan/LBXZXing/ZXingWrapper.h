@@ -27,7 +27,7 @@
  @param block 返回识别结果
  @return 返回封装对象
  */
-- (instancetype)initWithPreView:(UIView*)preView block:(void(^)(ZXBarcodeFormat barcodeFormat,NSString *str,UIImage *scanImg))block;
+- (instancetype)initWithPreView:(UIView*)preView block:(void(^)(ZXBarcodeFormat barcodeFormat,NSString *str,UIImage *scanImg))block brightNessBlock:(void(^)(CGFloat value))brightNessBlock;
 
 
 

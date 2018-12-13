@@ -60,7 +60,6 @@
     if (NSClassFromString(@"ZXMultiFormatReader")) {
       _reader = [NSClassFromString(@"ZXMultiFormatReader") performSelector:@selector(reader)];
     }
-
     _rotation = 0.0f;
     _running = NO;
     _sessionPreset = AVCaptureSessionPresetHigh;
@@ -148,6 +147,7 @@
 
     [self.input.device lockForConfiguration:nil];
     self.input.device.focusMode = focusMode;
+      [self.input.device setFocusPointOfInterest:CGPointMake(0.5, 0.4)];
     [self.input.device unlockForConfiguration];
   }
 }
@@ -305,6 +305,11 @@
         }
         
         [self.session startRunning];
+        
+        [self.captureDevice lockForConfiguration:nil];
+        CGFloat max = self.captureDevice.activeFormat.videoMaxZoomFactor;
+        self.captureDevice.videoZoomFactor = 1.5;
+        [self.captureDevice unlockForConfiguration];
     }
     self.running = YES;
 }

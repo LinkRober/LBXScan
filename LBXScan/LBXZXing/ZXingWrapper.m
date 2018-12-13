@@ -36,7 +36,7 @@ typedef void(^BrightNessBlock)(CGFloat value);
         self.capture.camera = self.capture.back;
         self.capture.focusMode = AVCaptureFocusModeContinuousAutoFocus;
         self.capture.rotation = 90.0f;
-        
+        self.capture.transform = CGAffineTransformMakeScale(2, 2);
         self.capture.delegate = self;
     }
     return self;

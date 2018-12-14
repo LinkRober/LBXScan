@@ -68,7 +68,7 @@ static BOOL kFocusFlag = NO;
     _sessionPreset = AVCaptureSessionPresetHigh;
     _transform = CGAffineTransformIdentity;
     _scanRect = CGRectZero;
-      flag = NO;
+    kFocusFlag = NO;
   }
 
   return self;

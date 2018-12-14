@@ -63,6 +63,8 @@
 - (void)start;
 - (void)stop;
 
+- (void)increaseFocus;
+- (void)startFocus;
 
 //+ (ZXResult *)regocnizeImage:(UIImage*)image;
 

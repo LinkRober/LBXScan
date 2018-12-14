@@ -43,6 +43,9 @@
 
 @end
 
+//变焦之后不再变焦的标志符
+static BOOL kFocusFlag = NO;
+
 @implementation LBXZXCapture
 
 - (LBXZXCapture *)init {
@@ -65,9 +68,25 @@
     _sessionPreset = AVCaptureSessionPresetHigh;
     _transform = CGAffineTransformIdentity;
     _scanRect = CGRectZero;
+      flag = NO;
   }
 
   return self;
+}
+
+- (void)increaseFocus {
+    if(self.captureDevice.videoZoomFactor == 1.3) return;
+    [self.captureDevice lockForConfiguration:nil];
+    CGFloat max = self.captureDevice.activeFormat.videoMaxZoomFactor;
+    [self.captureDevice rampToVideoZoomFactor:1.5 withRate:1];
+    [self.captureDevice unlockForConfiguration];
+}
+
+
+- (void)startFocus {
+    if(kFocusFlag) return;
+    kFocusFlag = YES;
+    [self increaseFocus];
 }
 
 - (void)dealloc {
@@ -79,7 +98,6 @@
     for(AVCaptureInput *input in _session.inputs) {
       [_session removeInput:input];
     }
-      
       [self.layer removeFromSuperlayer];
   }
 
@@ -305,11 +323,6 @@
         }
         
         [self.session startRunning];
-        
-        [self.captureDevice lockForConfiguration:nil];
-        CGFloat max = self.captureDevice.activeFormat.videoMaxZoomFactor;
-        self.captureDevice.videoZoomFactor = 1.5;
-        [self.captureDevice unlockForConfiguration];
     }
     self.running = YES;
 }
@@ -323,6 +336,7 @@
   if (self.session.running) {
    // [self.layer removeFromSuperlayer];
     [self.session stopRunning];
+      [self.layer removeAllAnimations];
   }
   self.running = NO;
 }

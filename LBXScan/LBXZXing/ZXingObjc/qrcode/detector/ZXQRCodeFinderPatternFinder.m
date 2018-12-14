@@ -524,6 +524,7 @@ NSInteger furthestFromAverageCompare(id center1, id center2, void *context) {
 - (NSMutableArray *)selectBestPatterns {
   int startSize = (int)[self.possibleCenters count];
   if (startSize < 3) {
+      [[NSNotificationCenter defaultCenter] postNotificationName:@"kLKQRBarFocusIncreaseNotification" object:nil];
     return nil;
   }
 

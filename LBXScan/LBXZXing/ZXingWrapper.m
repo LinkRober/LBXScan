@@ -21,6 +21,8 @@ typedef void(^BrightNessBlock)(CGFloat value);
 @property (nonatomic,copy) blockScan block;
 @property (nonatomic, copy) BrightNessBlock brightNessBlock;
 
+@property (nonatomic, strong) NSTimer  *timer;
+
 @property (nonatomic, assign) BOOL bNeedScanResult;
 
 @end
@@ -36,8 +38,8 @@ typedef void(^BrightNessBlock)(CGFloat value);
         self.capture.camera = self.capture.back;
         self.capture.focusMode = AVCaptureFocusModeContinuousAutoFocus;
         self.capture.rotation = 90.0f;
-        self.capture.transform = CGAffineTransformMakeScale(2, 2);
         self.capture.delegate = self;
+        
     }
     return self;
 }
@@ -60,12 +62,28 @@ typedef void(^BrightNessBlock)(CGFloat value);
         rect.origin = CGPointZero;
         
         self.capture.layer.frame = rect;
-        //[preView.layer addSublayer:self.capture.layer];
         
         [preView.layer insertSublayer:self.capture.layer atIndex:0];
         
+        self.timer = [NSTimer timerWithTimeInterval:3 target:self selector:@selector(startFocus) userInfo:nil repeats:NO];
+        [[NSRunLoop currentRunLoop] addTimer:self.timer forMode:NSDefaultRunLoopMode];
     }
     return self;
+}
+
+- (void)dealloc {
+    [[NSNotificationCenter defaultCenter] removeObserver:self];
+    [self.timer invalidate];
+}
+
+- (void)startFocus {
+        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(increaseFocus) name:@"kLKQRBarFocusIncreaseNotification" object:nil];
+}
+
+- (void)increaseFocus {
+    dispatch_async(dispatch_get_main_queue(), ^{
+        [self.capture startFocus];
+    });
 }
 
 - (void)setScanRect:(CGRect)scanRect
